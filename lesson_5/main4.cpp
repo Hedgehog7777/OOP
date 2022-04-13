@@ -63,16 +63,14 @@ class Hand
  }
  void Clear() //Очищает руку от карт. Удаляет все указатели из вектора m_Сards, устраняя все связанные с ними объекты в куче
  {
-  vector<Card*>::iterator iter = m_Cards.begin();
-  for (iter = m_Cards.begin(); iter != m_Cards.end(); ++iter)
-  {
-   delete *iter;
-   *iter = 0;
-  }
+ int a = m_Cards.size();
+  for (int i = 0; i < a; i++)
+   m_Cards.pop_back();
+  
   m_Cards.clear();
  }
  
- int GetTotal()  //Возвращает сумму очков карт руки
+ int GetValue()  //Возвращает сумму очков карт руки
  {
   if (m_Cards.empty())
   {
@@ -85,16 +83,15 @@ class Hand
   }
  
   int total = 0;
-  vector<Card*>::const_iterator iter;
-  for (iter = m_Cards.begin(); iter != m_Cards.end(); ++iter)
+  for (int i =0; i < m_Cards.size() ; i++)
   {
-   total += (*iter)->getValue();
+   total += m_Cards[i]->getValue();
   }
   
   bool containsAce = false;
-  for (iter = m_Cards.begin(); iter != m_Cards.end(); ++iter)
+  for (int i =0; i < m_Cards.size() ; i++)
   {
-   if ((*iter)->getValue() == Card::ace)
+   if (m_Cards[i]->getValue() == Card::ace)
    {
     containsAce = true;
    }
@@ -118,13 +115,13 @@ class GenericPlayer: public Hand
  
  virtual bool IsHitting() // чисто виртуальная функция, возвращает информацию, нужна ли игроку еще одна карта.
  {
-  if (GetTotal()<21)
+  if (GetValue()<21)
   {
    return 1;
   }
   else
   {
-   if  (GetTotal()==21)
+   if  (GetValue()==21)
    {
     return 0;
    }
@@ -137,7 +134,7 @@ class GenericPlayer: public Hand
  }
  bool IsBusted() //возвращает bool значение, есть ли у игрока перебор
  {
-  if(GetTotal()>21)
+  if(GetValue()>21)
   {
    return 1;
   }
